@@ -1,32 +1,100 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+  <div>    
+    <Loading v-show="$systemVariables.statusDataLoaded == 0" />
+    <Loading v-if="statusSiteLoaded == 0" />
+    <LoadingFailed v-else-if="statusSiteLoaded == -1" />
+    <ThemeDefault v-else-if="statusSiteLoaded == 1 && $systemVariables.user.id > 0" />
+    <ThemeSingle v-else-if="statusSiteLoaded == 1 && !($systemVariables.user.id > 0)" />
   </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script>
+import ThemeDefault from "./components/themes/ThemeDefault.vue";
+import ThemeSingle from "./components/themes/ThemeSingle.vue";
+import Loading from "./components/busy-states/Loading.vue";
+import LoadingFailed from "./components/busy-states/LoadingFailed.vue";
+export default {
+  components: {
+    Loading,
+    LoadingFailed,
+    ThemeDefault,
+    ThemeSingle,
+  },
+
+  data() {
+    return {
+      statusSiteLoaded: 0, //Loading=0,success=0,failed=-1  only this page
+    };
+  },
+  created() {
+    // this.checkAuthState();
+  },
+  mounted() {
+    //before create
+    this.$systemFunctions.loadLanguages();
+    //this.$axios.defaults.baseURL = 'http://127.0.0.1:8085/api';
+    //this.$axios.defaults.baseURL = 'http://192.168.0.3/api';
+    this.$axios.defaults.baseURL = 'http://127.0.0.1/ams/ams_back/public/api/';
+    // this.$axios.defaults.baseURL = 'http://127.0.0.1:8085/api';
+    this.$axios.defaults.headers.common['language'] = this.$systemVariables.language;
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$systemVariables.user.authToken;
+    //before axios call
+    let $this=this;
+    this.$axios.interceptors.request.use(function (config) {  
+        //$this.$toast.clear();
+        return config;
+      }, function (error) {        
+        return Promise.reject(error);
+      });
+    this.$systemFunctions.setPageTitle(this.$systemFunctions.getLabel("label_site_title"));
+    this.init();    
+  },
+  methods: {
+    init()
+    {
+      console.log("here");
+      this.$axios.all([      
+          this.$axios.get('/user/initialize'),          
+        ]).then(this.$axios.spread((resUser) => 
+        {
+          //console.log(resUser.data);
+          let successAll=true;
+          if(resUser.data.error){            
+              successAll=false;
+          }
+          else{
+            if(resUser.data.user){               
+              this.$systemFunctions.setUser(resUser.data.user); 
+            }                        
+          }          
+          if(successAll){
+            this.statusSiteLoaded=1;
+            if(!(this.$systemVariables.user.id>0)){
+                if(this.$router.history.current.path!='/login'){
+                this.$router.push("/login");
+              }
+            }            
+          }
+          else{
+            this.statusSiteLoaded=-1;
+          }          
+        })).catch(error => {                     
+          this.statusSiteLoaded=-1;
+      });
+    }
+  },
+  
+};
+</script>
+
+<style  scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
 }
 
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
