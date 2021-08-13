@@ -35,14 +35,14 @@
                     </div>
                 </div>
                 <div class="card-body" style='overflow-x:auto'>
-                    <table class="table table-m table-bordered">
-                        <thead class="table-light cell-m">
+                    <table class="table table-bordered">
+                        <thead class="table-active">
                             <tr>
                                 <th class="cell-nowrap d-print-none">{{$systemFunctions.getLabel('label_action')}}</th>
                                 <th v-for="(column,i) in columns.csv" :key="'columnTable'+i">{{$systemFunctions.getLabel(column.label)}}</th>                            
                             </tr>
                         </thead>
-                        <tbody class="table-striped table-hover cell-m">
+                        <tbody class="table-striped table-hover">
                             <tr v-for="item in getFilteredItems" :key="item.id">
                                 <td class="col-2 d-print-none">
                                     <button class="btn btn-sm bg-gradient-primary dropdown-toggle waves-effect waves-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{$systemFunctions.getLabel('label_action')}}</button>
@@ -129,7 +129,7 @@
                                     <div class="card-body" style='overflow-x:auto'>
                                         <form :id="'form_save_task_'+id">
                                             <table class="table table-m table-bordered">
-                                                <thead class="table-light cell-m">
+                                                <thead class="table-active">
                                                     <tr>
                                                         <th :colspan="modules_tasks_gropus.max_level">{{$systemFunctions.getLabelTask('label_module_task_name')}}</th>
                                                         <th v-for="(j,i) in module_task_max_action" :key="'th'+i">
@@ -137,7 +137,7 @@
                                                         </th>                            
                                                     </tr>
                                                 </thead>
-                                                <tbody class="table-striped table-hover cell-m">
+                                                <tbody class="table-striped table-hover">
                                                     <tr v-for="(module_task) in modules_tasks_gropus.modules_tasks" :key="module_task.id"> 
                                                         <td v-for="(j, i) in modules_tasks_gropus.max_level" :key="'td'+i">                            
                                                             <label v-if="module_task.level==j">
@@ -383,7 +383,7 @@ import ValidationError from '@/components/ValidationError.vue';
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
-                        this.$toast.success(this.$systemFunctions.getLabel('msg_success_saved'), {timeout: 2000 });
+                        this.$systemFunctions.showSuccessMessage(this.$systemFunctions.getLabel('msg_success_saved'));
                         $('#modalAddEdit').modal('hide');
                         this.getItems(this.pagination);
                     }
@@ -401,8 +401,8 @@ import ValidationError from '@/components/ValidationError.vue';
                 this.$axios.post('/user-groups/save-role/'+this.item.id,new FormData(document.getElementById(form_id)))
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
-                    if(res.data.error==''){
-                        this.$toast.success(this.$systemFunctions.getLabel('msg_success_saved'), {timeout: 2000 });
+                    if(res.data.error==''){                        
+                        this.$systemFunctions.showSuccessMessage(this.$systemFunctions.getLabel('msg_success_saved'));
                         $('#modalAssignTask').modal('hide');
                         this.getItems(this.pagination);
                     }

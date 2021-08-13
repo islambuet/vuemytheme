@@ -70,9 +70,14 @@ var systemFunctions = new Vue({
         // },
         setPageTitle(title) {
             document.title = title;
+        },        
+        showSuccessMessage(msg) {
+          console.log(msg);  
+          //TODO toast 2sce
         },
         showResponseFailure() {
-            this.$toast.error(this.$systemFunctions.getLabel('msg_loading_failed_message'));
+            //this.$toast.error(this.$systemFunctions.getLabel('msg_loading_failed_message'));
+            //TODO Errort 2sce
         },
         showResponseError(data) {
             //console.log(error);
@@ -80,7 +85,7 @@ var systemFunctions = new Vue({
                 $('.modal').modal('hide');
                 this.$systemVariables.statusTaskLoaded = -2;
             }
-            else if (data.error == 'SITE_OFFLINE') {
+            else if (data.error == 'API_OFFLINE') {
                 $('.modal').modal('hide');
                 this.$systemVariables.statusTaskLoaded = -3;
             }
@@ -108,7 +113,8 @@ var systemFunctions = new Vue({
                 
             }
             else {
-                this.$toast.error(this.$systemFunctions.getLabel(data.errorMessage));
+                //this.$toast.error(this.$systemFunctions.getLabel(data.errorMessage));
+                //TODO toast 2sce
             }
             //           
         },
