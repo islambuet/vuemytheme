@@ -1,8 +1,8 @@
 //for action and buttons both
 export var labels = {
     msg_404_title: {
-        en: "404",
-        bn: "৪০৪"
+        en: "Page Not found",
+        bn: "পৃষ্ঠা খুঁজে পাওয়া যায়নি"
     },
     msg_404_message: {
         en: "It's looking like you may have taken a wrong turn. Don't worry... it happens to the best of us. You might want to check your internet connection. Here's a little tip that might help you get back on track.",

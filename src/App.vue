@@ -47,7 +47,10 @@ export default {
         return Promise.reject(error);
       });
     this.$systemFunctions.setPageTitle(this.$systemFunctions.getLabel("label_site_title"));
-    this.init();    
+    this.init();
+    //this.$systemVariables.statusDataLoaded=0;    
+    //this.statusSiteLoaded=1;    
+
   },
   methods: {
     init()

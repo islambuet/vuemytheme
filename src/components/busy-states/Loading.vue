@@ -1,11 +1,9 @@
-<template>
-    <div>
-        <div class="box">
-            <div class="d-flex align-items-center justify-content-center">
-                <img src="theme/images/loading.svg" alt="">
-            </div>
+<template>    
+    <div class="box">
+        <div class="d-flex align-items-center justify-content-center">
+            <img src="theme/images/loading.svg" alt="">
         </div>
-    </div>
+    </div>    
 </template>
 
 <script>
