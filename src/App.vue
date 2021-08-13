@@ -1,5 +1,5 @@
 <template>
-  <div>    
+  <div id="system_main_container">    
     <Loading v-show="$systemVariables.statusDataLoaded == 0" />
     <Loading v-if="statusSiteLoaded == 0" />
     <LoadingFailed v-else-if="statusSiteLoaded == -1" />

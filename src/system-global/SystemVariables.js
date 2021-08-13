@@ -13,6 +13,7 @@ function initialData() {
       authToken: localStorage.getItem(localStorageAuthTokenStr) ? localStorage.getItem(localStorageAuthTokenStr) : '',
       id: 0,
       name: language == 'en' ? 'Guest' : 'অতিথি',
+      info:{},
       tasks: []
     },
     statusTaskLoaded: 0,    //Loading=0,success=1,failed=-1,acceesdenied=-2, site_off_line = -3  for all page

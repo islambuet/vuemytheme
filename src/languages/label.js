@@ -92,11 +92,6 @@ export var labels={
         en:"Logout",
         bn:"লগআউট"
     },
-
-    //unsed
-    //header section
-
-    /*
     label_change_language:{
         en:"Change language",
         bn:"ভাষা পরিবর্তন"
@@ -116,11 +111,13 @@ export var labels={
     label_login:{
         en:"Login",
         bn:"লগইন"
-    },
-    label_logout:{
-        en:"Logout",
-        bn:"লগআউট"
-    },
+    },    
+
+    //unsed
+    //header section
+
+    /*
+    
     label_register:{
         en:"Register",
         bn:"নিবন্ধন"
