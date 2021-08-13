@@ -42,8 +42,9 @@ export default {
     let $this=this;
     this.$axios.interceptors.request.use(function (config) {  
         //$this.$toast.clear();
+        $this.$systemVariables.validationErrors='';
         return config;
-      }, function (error) {        
+      }, function (error) {              
         return Promise.reject(error);
       });
     this.$systemFunctions.setPageTitle(this.$systemFunctions.getLabel("label_site_title"));

@@ -48,7 +48,7 @@
                 <!-- item-->
                 <a href="#" class="system_ajax dropdown-item"><i class="icon-mid bi bi-file-lock-fill me-2"></i> Change Password</a>                
                 <div class="dropdown-divider"></div>
-                <a href="#" class="system_ajax dropdown-item" v-on:click.prevent="$systemFunctions.logout()"><i class="icon-mid bi bi-power me-2"></i> {{$systemFunctions.getLabel('label_logout')}}</a>
+                <a href="#" class="system_ajax dropdown-item" v-on:click.prevent="$systemFunctions.logout($router)"><i class="icon-mid bi bi-power me-2"></i> {{$systemFunctions.getLabel('label_logout')}}</a>
             </div>            
         </li>
     </ul>
