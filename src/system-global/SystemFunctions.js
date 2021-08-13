@@ -72,12 +72,10 @@ var systemFunctions = new Vue({
             document.title = title;
         },        
         showSuccessMessage(msg) {
-          console.log(msg);  
-          //TODO toast 2sce
+            this.$toast.success(msg, {timeout: 2000 });
         },
         showResponseFailure() {
-            //this.$toast.error(this.$systemFunctions.getLabel('msg_loading_failed_message'));
-            //TODO Errort 2sce
+            this.$toast.error(this.$systemFunctions.getLabel('msg_loading_failed_message'));
         },
         showResponseError(data) {
             //console.log(error);
@@ -109,12 +107,9 @@ var systemFunctions = new Vue({
                 } else{
                     console.log(data.errorMessage);
                 }
-                
-                
             }
             else {
-                //this.$toast.error(this.$systemFunctions.getLabel(data.errorMessage));
-                //TODO toast 2sce
+                this.$toast.error(this.$systemFunctions.getLabel(data.errorMessage));
             }
             //           
         },

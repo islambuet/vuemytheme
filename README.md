@@ -16,3 +16,6 @@ npm run build
 ### install axios
 ```
 npm install axios -save
+
+###vue-toastification
+npm install --save vue-toastification

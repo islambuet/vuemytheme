@@ -9,6 +9,18 @@ import '@/system-global/SystemFunctions';
 import axios from 'axios';
 Vue.prototype.$axios = axios;
 
+// For Alerts
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+const options = {
+    timeout: false,
+    position: "top-center",
+    transition: "Vue-Toastification__fade",
+    maxToasts: 1,
+};
+Vue.use(Toast, options);
+// For Alerts
+
 Vue.config.productionTip = false
 
 new Vue({
