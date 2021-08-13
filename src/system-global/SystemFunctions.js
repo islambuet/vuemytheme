@@ -128,7 +128,7 @@ var systemFunctions = new Vue({
         //     this.$systemVariables.authToken = localStorage.getItem('authToken');
         //     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('authToken');
         // },
-        logout($router) {
+        logout() {
             this.$axios.get('/user/logout')
             .then(response => {                    
             })
@@ -136,11 +136,9 @@ var systemFunctions = new Vue({
             });
             localStorage.setItem(this.$systemVariables.localStorageAuthTokenStr, '');
             this.$axios.defaults.headers.common['Authorization'] = '';
-            this.$systemVariables.user = this.$systemVariables.getInitialUser();
-            //console.log(this.$systemVariables.user);
-            //this.$routes.push("/login");
-            //console.log($router);
-            $router.push("/login");
+            this.$systemVariables.user = this.$systemVariables.getInitialUser();            
+            this.$routes.push("/login");
+            
         },
         changeLanguage(language)
         {
