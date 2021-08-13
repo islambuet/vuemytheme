@@ -13,6 +13,13 @@ var systemHtmlElementsAction= new Vue(
           console.log("Right clicked");       
           $('#system_right_sidebar').toggleClass('inactive');
           $('#system_content').toggleClass('inactive_right_sidebar');            
+        },        
+        click_task_links:function (event)
+        {  
+          $('#system_left_sidebar').removeClass('inactive');
+          $('#system_content').removeClass('inactive_left_sidebar');
+          $('#system_right_sidebar').removeClass('inactive');
+          $('#system_content').removeClass('inactive_right_sidebar');  
         },
         click_handler_password_eye:function (event,param)
         {
@@ -28,20 +35,7 @@ var systemHtmlElementsAction= new Vue(
               $(curelement).find('i').removeClass('fe-eye-off').addClass('fe-eye');
               input.attr('type','password');
           }         
-        },
-        click_change_language:function (event,language)
-        {
-          localStorage.setItem('language',language);  
-          window.location.reload(); 
-        },
-        click_task_links:function (event)
-        {  
-          $('#system_left_sidebar').removeClass('inactive');
-          $('#system_content').removeClass('inactive_left_sidebar');
-          $('#system_right_sidebar').removeClass('inactive');
-          $('#system_content').removeClass('inactive_right_sidebar');  
-        },
-        
+        },        
         /************
          * data-minimum-size-to-resize//1372022
          * data-resize-width//800

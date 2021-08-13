@@ -1,23 +1,28 @@
 <template>
-  <li v-if="menu.type=='MODULE'" class="sidebar-item  has-sub"><a href="javascript:void(0)" class="sidebar-link"><i class="bi bi-pentagon-fill"></i><span>{{menu['name_'+$systemVariables.language]}}</span></a>
-    <ul class="submenu">
-        <menu-item v-for="child in menu.children" :key="child.id" :menu="child"></menu-item>
+  <li @click="(menu.type=='TASK')||(menu.type=='TASK_GROUP')?$systemHtmlElementsAction.click_task_links($event):{}">
+    <a v-if="menu.type=='MODULE'" :href="'#'+item_id_prefix+menu.id" data-toggle="collapse" aria-expanded="false">      
+      <i class="bi bi-pentagon-fill"></i> {{menu['name_'+$systemVariables.language]}}<span class="fe-menu-arrow"></span>
+    </a>    
+    <router-link v-else :to="'/'+menu.url">
+      <i class="bi bi-life-preserver"></i> {{ menu['name_'+$systemVariables.language]}}
+    </router-link>    
+     <ul :id="item_id_prefix+menu.id" class="list-unstyled collapse" v-if="menu.children && menu.children.length">
+      <menu-item v-for="child in menu.children" :key="child.id" :menu="child"></menu-item>
     </ul>
-  </li>  
-  <li v-else class="sidebar-item"><router-link :to="menu.url" class='sidebar-link'><i class="bi bi-life-preserver"></i><span>{{ menu['name_'+$systemVariables.language]}}</span></router-link></li>
-  <!-- <li v-else class="nav-item"><router-link :to="menu.url"><i class="feather icon-target"></i><span class="menu-title">{{ menu['name_'+$systemVariables.language]}}</span></router-link></li> -->
-  <!-- <li v-else class="nav-item" ><router-link :to="menu.url"><i class="feather icon-target"></i><span class="menu-item"><i class="feather icon-target"></i>{{ menu['name_'+$systemVariables.language]}}</span></router-link></li> -->
-  <!-- <li v-else class="nav-item"><router-link :to="menu.url"><i class="feather icon-home"></i><span class="menu-title" data-i18n="Dashboard">Dashboard</span><span class="badge badge badge-warning badge-pill float-right">1</span></router-link> -->
-  
-
+  </li>
 </template>
 
 <script>
 export default { 
   name: "menuItem",   
   props: {
-    menu:Object,      
-  },
+    menu:Object,  
+    item_id_prefix:
+      {
+        type:String ,
+        default:'side_menu_'
+      }
+    }
 };
 </script>
 <style scoped>

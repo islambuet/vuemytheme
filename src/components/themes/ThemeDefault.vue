@@ -2,13 +2,14 @@
     <div>      
       <Header/>
       <SidebarLeft/>
-      <!-- <SidebarRight/> -->      
+      <!-- <SidebarRight/>       -->
     </div>
 </template>
 
 <script>
 import Header from "../Header.vue";
 import SidebarLeft from "../SidebarLeft.vue";
+import SidebarRight from "../SidebarRight.vue";
 import Footer from "../Footer.vue";
 import LoadingAccessDeny from "../busy-states/LoadingAccessDeny.vue";
 import SiteOffline from "../busy-states/SiteOffline.vue";
@@ -17,6 +18,7 @@ export default {
   components: {
     Header,
     SidebarLeft,
+    SidebarRight,
     Footer,
     SiteOffline,
     LoadingAccessDeny,

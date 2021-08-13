@@ -9,9 +9,9 @@
         <i class="bi bi-justify fs-3"></i>
     </button>
     <!-- Right Sidebar handler -->
-    <button id="handler_right_sidebar" class="handler-sidebar float-right" v-on:click="$systemHtmlElementsAction.click_handler_right_sidebar($event)">
+    <!-- <button id="handler_right_sidebar" class="handler-sidebar float-right" v-on:click="$systemHtmlElementsAction.click_handler_right_sidebar($event)">
         <i class="bi bi-justify fs-3"></i>
-    </button>    
+    </button>     -->
     <ul class="list-unstyled float-right mb-0">
         
         <!-- Language options -->

@@ -51,8 +51,7 @@ export default {
   },
   methods: {
     init()
-    {
-      console.log("here");
+    {      
       this.$axios.all([      
           this.$axios.get('/user/initialize'),          
         ]).then(this.$axios.spread((resUser) => 
