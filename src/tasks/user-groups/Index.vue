@@ -8,8 +8,8 @@
             <div class="card-content">
                 <div class="card-body px-2 pt-2 pb-0 d-print-none">
                     <div class="row">
-                        <div class="col-md-6 col-sm-12 d-flex align-items-center">
-                            <div class="btn-group" role="group">
+                        <div class="col-md-6 col-sm-12 d-flex align-items-center">                            
+                            <div class="btn-group btn-group-sm" role="group">
                                 <button v-if="permissions.action_1" type="button" class="btn btn-m bg-gradient-primary" data-toggle="modal" data-target="#modalAddEdit" @click="addItem()">
                                     <i class="feather icon-plus-circle"></i> {{$systemFunctions.getLabel('action_1')}}
                                 </button>
@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <div v-if="permissions.action_7" class="col-md-6 col-sm-12 d-flex align-items-center">
-                            <div class="input-group float-right p-0">
+                            <div class="input-group float-right p-0 input-group-sm">
                                 <input @keyup.enter="search" v-model="searchString" type="text" class="form-control" placeholder="Search..." aria-describedby="button-addon2">
                                 <div class="input-group-append" id="button-addon2">
                                         <button  class="btn btn-m bg-gradient-primary waves-effect waves-light" type="button"><i class="feather icon-search"></i></button>
@@ -45,17 +45,15 @@
                         <tbody class="table-striped table-hover cell-m">
                             <tr v-for="item in getFilteredItems" :key="item.id">
                                 <td class="col-2 d-print-none">
-                                    <div class="btn-group">
-                                        <div class="dropdown">
-                                            <button class="btn btn-m bg-gradient-primary dropdown-toggle waves-effect waves-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{$systemFunctions.getLabel('label_action')}}</button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
-                                                <a v-if="permissions.action_2" class="dropdown-item text-info" href="javascript:void(0)" @click="editItem(item)" data-toggle="modal" data-target="#modalAddEdit"><i class="feather icon-edit"></i> {{$systemFunctions.getLabel('action_2')}}</a>
-                                                <a v-if="permissions.action_2" class="dropdown-item text-info" href="javascript:void(0)" @click="assignTask(item)" data-toggle="modal" data-target="#modalAssignTask"><i class="feather icon-check-square"></i> {{$systemFunctions.getLabelTask('action_assign_Task')}}</a>
-                                                <!-- 
-                                                <a class="dropdown-item text-danger" href="javascript:void(0)" @click="deleteData(item.id)"><i class="feather icon-trash"></i> Delete</a> -->
-                                            </div>
-                                        </div>
+                                    <button class="btn btn-sm bg-gradient-primary dropdown-toggle waves-effect waves-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{$systemFunctions.getLabel('label_action')}}</button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                                        <a v-if="permissions.action_2" class="dropdown-item text-info btn-sm" href="javascript:void(0)" @click="editItem(item)" data-toggle="modal" data-target="#modalAddEdit"><i class="feather icon-edit"></i> {{$systemFunctions.getLabel('action_2')}}</a>
+                                        <a v-if="permissions.action_2" class="dropdown-item text-info btn-sm" href="javascript:void(0)" @click="assignTask(item)" data-toggle="modal" data-target="#modalAssignTask"><i class="feather icon-check-square"></i> {{$systemFunctions.getLabelTask('action_assign_Task')}}</a>
+                                        <!-- 
+                                        <a class="dropdown-item text-danger" href="javascript:void(0)" @click="deleteData(item.id)"><i class="feather icon-trash"></i> Delete</a> -->
                                     </div>
+                                
+                                    
                                 </td>
                                 <td class="col-1">{{ item.id }}</td>
                                 <td class="col-7">{{ item.name }}</td>
