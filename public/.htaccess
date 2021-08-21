@@ -1,0 +1,7 @@
+  RewriteEngine On
+  RewriteBase /ams/output
+  RewriteRule ^ams/output/index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /ams/output/index.html [L]
+

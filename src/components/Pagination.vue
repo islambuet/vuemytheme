@@ -7,6 +7,18 @@
                 <option v-if="pagination.show_all_items" :value="items.total">{{$systemFunctions.getLabel('label_all_items')}}</option>
             </select>
         </div>
+        <div class="col" v-if="items.total>0">
+            <label>{{$systemFunctions.getLabel('label_showing')}}: </label>
+            <label v-if="items.to">{{items.from}}-{{items.to}} </label>
+            <label v-else>0-0 </label>
+             of {{items.total}}
+        </div>
+        <div class="col" v-else>
+            <label>{{$systemFunctions.getLabel('label_showing')}}: </label>            
+            <label> 0-0 </label>
+             of {{items.total}}
+        </div>
+        
         <div class="col text-right">
             <button class="btn-pagination" @click.prevent="--pagination.current_page;onChangePageOption(pagination)" :disabled="items.current_page < 2">{{$systemFunctions.getLabel('label_previous')}}</button>
             <label>{{$systemFunctions.getLabel('label_go_page')}}</label>

@@ -1,193 +1,309 @@
 <template>
-    <div>
-        <section class="card mb-1">
+    <div v-if="$systemVariables.statusTaskLoaded==1">
+        <div class="card">
             <div class="card-header p-1">
-                <h4 class="card-title">Module &amp; Tasks List</h4>
+                <h4 class="card-title">{{$systemFunctions.getLabelTask('label_task')}}</h4>
             </div>
             <hr class="my-0"/>
             <div class="card-content">
-                <div class="card-body px-1 pt-1 pb-0">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-m btn-primary" data-toggle="modal" data-target="#modalAddEdit" @click="addEditForm(1, [])">
-                            <i class="feather icon-plus-circle"></i> Add
-                        </button>
-                        <button type="button" class="btn btn-m btn-primary">
-                            <i class="feather icon-printer"></i> Print
-                        </button>
-                        <button type="button" class="btn btn-m btn-primary">
-                            <i class="feather icon-download"></i> Download
-                        </button>
+                <div class="card-body px-2 pt-2 pb-0 d-print-none">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12 d-flex align-items-center">                            
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button v-if="permissions.action_1" type="button" class="btn btn-m bg-gradient-primary" data-toggle="modal" data-target="#modalAddEdit" @click="addItem()">
+                                    <i class="feather icon-plus-circle"></i> {{$systemFunctions.getLabel('action_1')}}
+                                </button>
+                                <button v-if="permissions.action_5" type="button" class="btn btn-m bg-gradient-primary" onclick="window.print();">
+                                    <i class="feather icon-printer"></i> {{$systemFunctions.getLabel('action_5')}}
+                                </button>
+                                <button v-if="permissions.action_6" type="button" class="btn btn-m bg-gradient-primary" @click="$systemFunctions.exportCsv(columns.csv,getFilteredItems,'moduletasks.csv')">
+                                    <i class="feather icon-download"></i> {{$systemFunctions.getLabel('action_6')}}
+                                </button>
+                                <button v-if="permissions.action_0" type="button" class="btn btn-m bg-gradient-primary" @click="init">
+                                    <i class="feather icon-rotate-cw"></i> {{$systemFunctions.getLabel('action_refresh')}}
+                                </button>
+                            </div>
+                        </div>                        
                     </div>
                 </div>
-                <div class="card-body p-1">
-                    <div class="table">
-                        <table class="table table-m table-bordered">
-                            <thead class="table-light cell-m">
-                                <tr>
-                                    <th class="cell-nowrap">Action</th>
-                                    <th>ID</th>
-                                    <th title="In english">Name (EN)</th>
-                                    <th title="In bangla">Name (BN)</th>
-                                    <th>Type</th>
-                                    <th>Path/ URL</th>
-                                    <th>Controller</th>
-                                    <th>Ordering</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody v-if="items.length>0" class="table-striped table-hover cell-m">
-                                <tr v-for="(item, i) in items" :key="item.id">
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="btn btn-m btn-primary dropdown-toggle" type="button" :id="'dd_btn_'+i" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Action
-                                            </button>
-                                            <div class="dropdown-menu" :aria-labelledby="'dd_btn_'+i">
-                                                <a class="dropdown-item text-primary" data-toggle="modal" data-target="#modalAddEdit" @click="addEditForm(2, item)">
-                                                    <i class="feather icon-edit"></i> Edit
-                                                </a>
-                                                <a class="dropdown-item text-danger" @click.prevent="deleteItem(item.id)"><i class="feather icon-trash-2"></i> Delete</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>{{ item.id }}</td>
-                                    <td>{{ item.prefix }} {{ item.name_en }}</td>
-                                    <td>{{ item.name_bn }}</td>
-                                    <td>{{ item.type }}</td>
-                                    <td>{{ item.url }}</td>
-                                    <td>{{ item.controller }}</td>
-                                    <td>{{ item.ordering }}</td>
-                                    <td>{{ item.status }}</td>
-                                </tr>
-                            </tbody>
-                            <tbody v-else>
-                                <tr>
-                                    <td colspan="9" class="text-center">- NO DATA FOUND -</td>
-                                </tr>
-                            </tbody>                                          
-                        </table>
+                <div class="card-body" style='overflow-x:auto'>
+                    <table class="table table-bordered">
+                        <thead class="table-active">
+                            <tr>
+                                <th class="cell-nowrap d-print-none">{{$systemFunctions.getLabel('label_action')}}</th>
+                                <th v-for="(column,i) in columns.csv" :key="'columnTable'+i">{{$systemFunctions.getLabel(column.label)}}</th>                            
+                            </tr>
+                        </thead>
+                        <tbody class="table-striped table-hover">
+                            <tr v-for="item in getFilteredItems" :key="item.id">
+                                <td class="col-2 d-print-none">
+                                    <button class="btn btn-sm bg-gradient-primary dropdown-toggle waves-effect waves-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{$systemFunctions.getLabel('label_action')}}</button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                                        <a v-if="permissions.action_2" class="dropdown-item text-info btn-sm" href="javascript:void(0)" @click="editItem(item)" data-toggle="modal" data-target="#modalAddEdit"><i class="feather icon-edit"></i> {{$systemFunctions.getLabel('action_2')}}</a>
+                                    </div>
+                                </td>
+                                <td class="col-1">{{ item.id }}</td>
+                                <td class="col-1">{{ item.type }}</td>                                
+                                <td class="col-1" v-for="column in modules_tasks.max_level+1" :key="'name_'+column">{{ item['name_'+(column-1)] }}</td>
+                                <td class="col-1">{{ item.url }}</td>
+                                <td class="col-1">{{ item.controller }}</td>
+                                <td class="col-1">{{ item.ordering }}</td>
+                                
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- Modal for addEdit -->
+        <div class="modal fade small" id="modalAddEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 v-if="item.id>0" class="modal-title" id="exampleModalCenterTitle">{{$systemFunctions.getLabelTask('label_edit')+'('+item.name_0+')'}}</h5>
+                        <h5 v-else class="modal-title" id="exampleModalCenterTitle">{{$systemFunctions.getLabelTask('label_new')}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
                     </div>
+                    <div class="modal-body">
+                        <ValidationError/>
+                        <form id="formSave">
+                            <input type="hidden" name="id" :value="item.id" />
+                            <fieldset class="form-group">
+                                <label>{{$systemFunctions.getLabel('label_name_en')}}</label>
+                                <input name="item[name_en]" v-model="item.name_en" type="text" class="form-control form-control-sm" :placeholder="$systemFunctions.getLabel('label_name_en')" required>
+                            </fieldset>
+                            <fieldset class="form-group">
+                                <label>{{$systemFunctions.getLabel('label_name_bn')}}</label>
+                                <input name="item[name_bn]" v-model="item.name_bn" type="text" class="form-control form-control-sm" :placeholder="$systemFunctions.getLabel('label_name_bn')" required>
+                            </fieldset>
+                            <fieldset class="form-group">
+                                <label>{{$systemFunctions.getLabelTask('label_module_task_type')}}</label>                                  
+                                <select class="form-control form-control-sm" name="item[type]" v-model="item.type" required>   
+                                    <option :value="type" v-for="type in types" :key="'type_'+type">{{type}}</option>
+                                </select>
+                            </fieldset>
+                            <fieldset class="form-group">
+                                <label>{{$systemFunctions.getLabelTask('label_parent')}}</label>                                  
+                                <select class="form-control form-control-sm" name="item[parent]" v-model="item.parent" required>  
+                                    <option value="0">Main Menu</option> 
+                                    <option :value="parent.value" v-for="parent in getParents" :key="'parent_'+parent.value">{{parent.text}}</option>                                    
+                                </select>
+                            </fieldset>
 
-                    <div class="modal-wrap">
-                        <AddEdit :item="item" :items="items" />
+                            <fieldset class="form-group">
+                                <label>{{$systemFunctions.getLabelTask('label_url')}}</label>
+                                <input name="item[url]" v-model="item.url" type="text" class="form-control form-control-sm" placeholder="url" required>
+                            </fieldset>
+                            <fieldset class="form-group">
+                                <label>{{$systemFunctions.getLabelTask('label_controller')}}</label>
+                                <input name="item[controller]" v-model="item.controller" type="text" class="form-control form-control-sm" placeholder="controller" required>
+                            </fieldset>
+
+                            <fieldset class="form-group">
+                                <label>{{$systemFunctions.getLabel('label_ordering')}}</label>                                
+                                <input name="item[ordering]" v-model="item.ordering" type="number" class="form-control form-control-sm" placeholder="Ordering Number" required>
+                            </fieldset>
+                            <fieldset class="form-group">
+                                <label>{{$systemFunctions.getLabel('label_status')}}</label>                                  
+                                <select class="form-control form-control-sm" name="item[status]" v-model="item.status" required>                                    
+                                    <option :value="$systemVariables.dbStatus.ACTIVE">{{$systemVariables.dbStatus.ACTIVE}}</option>
+                                    <option :value="$systemVariables.dbStatus.INACTIVE">{{$systemVariables.dbStatus.INACTIVE}}</option>
+                                    
+                                </select>
+                            </fieldset>
+                            <button @click="saveItem()" type="button" class="btn bg-gradient-success mr-1 mb-1 waves-effect waves-light float-right">{{$systemFunctions.getLabel('button_save')}}</button>                            
+                        </form>
                     </div>
                 </div>
             </div>
-        </section>
-        <!--/ Content Body -->
+        </div>
     </div>
 </template>
 
 <script>
-
-import AddEdit from './AddEdit.vue';
-
-export default {
-    name: "Login",
-    components: {
-        AddEdit 
-    },        
-    mounted: function() {
-        this.win_hight = window.innerHeight-280;
-        this.item = this.item_default;
-        this.init();
-    },
-    data: function() {
-        return {
-            win_hight: window.innerHeight,
-            modal_action: 0, // According to action. (1 for ADD | 2 for EDIT | 3 for DELETE)
-            items: [],
-            item: {},
-            item_default: {
-                'id': 0,
-                'name_en': '',
-                'name_bn': '',
-                'type': 'MODULE',
-                'url': '',
-                'controller': '',
-                'ordering': 999,
-                'status': 'Active'
-            }
-        }
-    },        
-    methods:{
-        init() {
-            this.item = this.item_default;
-            this.$axios.get('/api/module-tasks')
-            .then((response)=>{
-                if(response.status == 200) {
-                    this.items = response.data.items;
-                } else {
-                    console.log('Status Code: '+response.status+'\n'+'Message: '+response.statusText);
-                }
-            })
-            .catch((error)=>{
-                console.log('Fetch Error: ');
-                console.log(error);
-            });
+import Pagination from '@/components/Pagination.vue';
+import ValidationError from '@/components/ValidationError.vue';
+    export default {
+        components: {
+            Pagination,
+            ValidationError,
         },
-        addEditForm(action, row) {  // Here, we will check if the ADD/ EDIT/ DELETE action is Allowed or not. 
-            // ---- Check permission ----
-            //         here....
-            // --------------------------
-            if(action == 2){
-                this.item = row;
+
+        data (){
+            return {                
+                permissions:{'action_0':0},
+                columns:{csv:[]},
+                //csv:all-hidden,hidden,control/all,filter/search                
+                itemDefault: {id:0,name_en:'',name_bn:'',type:'',parent:0,url:'',controller:'',ordering:'',status:''},
+                items: {data:[]},
+                item: {},     
+                types:[],                                           
+                modules_tasks:{'max_level':1,'tree':[]}, 
             }
         },
-        save(){ // ADD and EDIT
-            let formData=new FormData(document.getElementById('saveForm'));
-            let item_id = formData.get('item_id');
-
-            let url_part='';
-            if(!isNaN(item_id) && item_id > 0){
-                url_part += '/'+item_id;
-                formData.append('_method', 'PUT');
-            }
-            // Axios(http) Request
-            this.$axios.post('/api/module-tasks'+url_part, formData)
-            .then((response)=>{
-                if(response.data.response == "success") {
-                    this.$toast.success(response.data.string, {timeout: 2000});
-                    $("#modalAddEdit").modal('hide');
-                    this.init();
-                } else {
-                    console.log('Status Code: '+response.status+'\n'+'Message: '+response.statusText);
-                }
-            })
-            .catch((error)=>{
-                if(error.response.status == 422){
-                    let error_msg='';
-                    for (let [key, value] of Object.entries(error.response.data.errors)) {
-                        error_msg += '\n'+value[0];
-                    }
-                    this.$toast.error(error_msg);
-                }
-                else{
-                    this.$toast.error(error.response.statusText);
-                }
-            });
-        },
-        deleteItem(delete_id){ // DELETE
-            if(!confirm('Are you sure?')){
+        mounted (){
+            if(!(this.$systemVariables.user.id>0)){
                 return;
             }
-            this.$axios.delete('/api/module-tasks/'+delete_id, {})
-            .then((response)=>{
-                if(response.data.response == "success") {
-                    this.$toast.success(response.data.string, {timeout: 2000});
-                    this.init();
-                } else {
-                    console.log('Status Code: '+response.status+'\n'+'Message: '+response.statusText);
+            this.$systemFunctions.loadTaskLanguages([
+                {language:this.$systemVariables.language,file:'tasks/module-tasks/language.js'},
+            ]);            
+            this.init();            
+        },
+        computed:{   
+            getFilteredItems:function(){  
+                var items=[];
+                for(var i=0;i<this.modules_tasks.tree.length;i++)
+                {                    
+                    var item={};
+                    Object.assign(item, this.modules_tasks.tree[i].module_task);
+                    item['name_0']=this.modules_tasks.tree[i].module_task['name_'+((this.$systemVariables.language=='en')?'bn':'en')]; 
+                    for(var level=1;level<=this.modules_tasks.max_level;level++)
+                    {
+                        if(level==this.modules_tasks.tree[i].level)
+                        {
+                            item['name_'+level]=this.modules_tasks.tree[i].module_task['name_'+this.$systemVariables.language];          
+                        }
+                        else
+                        { 
+                            item['name_'+level]='';   
+                        }
+                    }                                
+                    items.push(item);                    
                 }
-            })
-            .catch((error)=>{
-                console.log(error.response);
-            });
+                
+                return items;  
+            },  
+            getParents:function(){ 
+                var temp_items=[];  
+                for(var i=0;i<this.modules_tasks.tree.length;i++)
+                {
+                    if(this.modules_tasks.tree[i].module_task.type!='TASK')
+                    {
+                        temp_items.push({value:this.modules_tasks.tree[i].module_task.id,text:this.modules_tasks.tree[i].prefix+''+this.modules_tasks.tree[i].module_task['name_en']});
+                    }
+                } 
+                return temp_items;
+            }    
+        }, 
+        methods: {
+            init(){
+                this.$systemVariables.statusTaskLoaded=0;
+                this.$systemVariables.statusDataLoaded=0;
+                this.$axios.get('/module-tasks/initialize')
+                .then(res=>{
+                    this.$systemVariables.statusDataLoaded = 1;
+                    if(res.data.error==''){
+                                                
+                        this.permissions=res.data.permissions;
+                        this.itemDefault=res.data.itemDefault;
+                        this.types=res.data.types;
+                        this.$systemVariables.statusTaskLoaded=1;
+                        this.getItems();
+                    }
+                }).catch(error => {                      
+                    this.$systemVariables.statusDataLoaded = 1;
+                    if (error.response && error.response.data && error.response.data.error) {
+                        this.$systemFunctions.showResponseError(error.response.data);            
+                    } else {            
+                        this.$systemFunctions.showResponseFailure();
+                    }                              
+                });
+
+            },
+            setColumnCsv() {
+                this.columns.csv=[];                
+                this.columns.csv.push({
+                    label: this.$systemFunctions.getLabel('label_id'),
+                    key: 'id'
+                });
+                this.columns.csv.push({
+                    label: this.$systemFunctions.getLabelTask('label_module_task_type'),
+                    key: 'type'
+                });
+                this.columns.csv.push({
+                        label: this.$systemFunctions.getLabel('label_name_'+((this.$systemVariables.language=='en')?'bn':'en')),
+                        key: 'name_0'
+                    });
+                for(var level=1;level<=this.modules_tasks.max_level;level++)
+                {
+                    this.columns.csv.push({
+                        label: this.$systemFunctions.getLabel('label_name_'+this.$systemVariables.language),
+                        key: 'name_'+level
+                    });         
+                }
+                this.columns.csv.push({
+                    label: this.$systemFunctions.getLabelTask('label_url'),
+                    key: 'url'
+                });
+                this.columns.csv.push({
+                    label: this.$systemFunctions.getLabelTask('label_controller'),
+                    key: 'controller'
+                });                
+                this.columns.csv.push({
+                    label: this.$systemFunctions.getLabel('label_ordering'),
+                    key: 'ordering'
+                });
+                
+            },
+            getItems(){
+                this.$systemVariables.statusDataLoaded=0;
+                this.$axios.get('/module-tasks/get-items')
+                .then(res => {
+                    this.$systemVariables.statusDataLoaded = 1;
+                    if(res.data.error==''){
+                        this.modules_tasks=res.data.modules_tasks;  
+                        this.setColumnCsv();                                                                      
+                    }
+                }).catch(error => {                      
+                    this.$systemVariables.statusDataLoaded = 1;
+                    if (error.response && error.response.data && error.response.data.error) {
+                        this.$systemFunctions.showResponseError(error.response.data);            
+                    } else {            
+                        this.$systemFunctions.showResponseFailure();
+                    }                              
+                });
+            },            
+            addItem(){
+                this.$systemVariables.validationErrors='';
+                this.item={};
+                Object.assign(this.item, this.itemDefault);                
+            },
+            editItem(item){                
+                this.$systemVariables.validationErrors='';
+                this.item={};
+                Object.assign(this.item, item);                            
+            },                     
+            saveItem(){
+                
+                this.$systemVariables.statusDataLoaded=0;
+                this.$axios.post('/module-tasks/save-item',new FormData(document.getElementById('formSave')))
+                .then(res => {
+                    this.$systemVariables.statusDataLoaded = 1;
+                    if(res.data.error==''){
+                        this.$systemFunctions.showSuccessMessage(this.$systemFunctions.getLabel('msg_success_saved'));
+                        $('#modalAddEdit').modal('hide');
+                        this.getItems(this.pagination);
+                    }
+                }).catch(error => {                      
+                    this.$systemVariables.statusDataLoaded = 1;
+                    if (error.response && error.response.data && error.response.data.error) {
+                        this.$systemFunctions.showResponseError(error.response.data);            
+                    } else {            
+                        this.$systemFunctions.showResponseFailure();
+                    }                              
+                });
+            },
+            
+            
         }
+
     }
-}
 </script>
 
 <style  scoped>
-    .cell-nowrap{width: 1%; white-space: nowrap}
+
 </style>

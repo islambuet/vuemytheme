@@ -2,7 +2,7 @@
   <header id="system_top_bar" class="d-print-none">
     <!-- LOGO -->
     <div id="logo_container" class="d-none d-lg-block d-xl-block float-left">
-        <img style="height: 25px;" v-bind:src="'theme/images/logo-lg.png'" alt="">        
+        <img style="height: 25px;" v-bind:src="$systemVariables.baseUrl+'theme/images/logo-lg.png'" alt="">        
     </div>
     <!-- Left Sidebar handler -->
     <button id="handler_left_sidebar" class="handler-sidebar float-left" v-on:click="$systemHtmlElementsAction.click_handler_left_sidebar($event)">
@@ -37,7 +37,7 @@
         <li>
             <a class="nav-link dropdown-toggle mr-0" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                 <img v-bind:src="$systemVariables.user.info.profile_picture" v-if="$systemVariables.user.info.profile_picture" alt="profileImage" class="rounded-circle" style="height: 32px;width: 32px;">
-                <img v-bind:src="'theme/images/guest.png'" v-else alt="Image" class="rounded-circle" style="height: 32px;width: 32px;">
+                <img v-bind:src="$systemVariables.baseUrl+'theme/images/guest.png'" v-else alt="Image" class="rounded-circle" style="height: 32px;width: 32px;">
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <div class="dropdown-item">

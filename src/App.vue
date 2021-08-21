@@ -35,13 +35,18 @@ export default {
     //this.$axios.defaults.baseURL = 'http://127.0.0.1:8085/api';
     //this.$axios.defaults.baseURL = 'http://192.168.0.3/api';
     this.$axios.defaults.baseURL = 'http://127.0.0.1/ams/ams_back/public/api/';
-    // this.$axios.defaults.baseURL = 'http://127.0.0.1:8085/api';
+    //this.$axios.defaults.baseURL = 'http://127.0.0.1:8085/api';
+    //console.log(this.$systemVariables.baseUrl);
+    //this.$axios.defaults.baseURL = this.$systemVariables.baseUrl +'../ams_back/public/api/';
+    //this.$axios.defaults.baseURL = this.$systemVariables.baseUrl +'ams_back/public/api/';//enable for final build
+    
+    
     this.$axios.defaults.headers.common['language'] = this.$systemVariables.language;
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$systemVariables.user.authToken;
     //before axios call
     let $this=this;
     this.$axios.interceptors.request.use(function (config) {  
-        //$this.$toast.clear();
+        $this.$toast.clear();
         $this.$systemVariables.validationErrors='';
         return config;
       }, function (error) {              
@@ -55,35 +60,28 @@ export default {
   },
   methods: {
     init()
-    {      
+    {  
       this.$axios.all([      
-          this.$axios.get('/user/initialize'),          
+          this.$axios.get('/user/initialize'),  
+                
         ]).then(this.$axios.spread((resUser) => 
         {
-          //console.log(resUser.data);
-          let successAll=true;
-          if(resUser.data.error){            
-              successAll=false;
-          }
-          else{
-            if(resUser.data.user){               
+          
+          if(resUser.data.user){               
               this.$systemFunctions.setUser(resUser.data.user); 
-            }                        
-          }          
-          if(successAll){
-            this.statusSiteLoaded=1;
-            if(!(this.$systemVariables.user.id>0)){
-                if(this.$router.history.current.path!='/login'){
+            }else{
+              if(this.$router.history.current.path!='/login'){
                 this.$router.push("/login");
               }
-            }            
-          }
-          else{
-            this.statusSiteLoaded=-1;
-          }          
-        })).catch(error => {                     
+            }  
+            this.statusSiteLoaded=1; 
+
+         
+        })).catch(error => {            
           this.statusSiteLoaded=-1;
       });
+
+      
     }
   },
   

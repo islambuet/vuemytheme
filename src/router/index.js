@@ -3,14 +3,28 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const routes = [
-  { path: '/',  component: () => import('@/tasks/Dashboard.vue'), },
-    { path: '/login', component: () => import('@/tasks/Login.vue') },
-    { path: '/module-tasks', component: () => import('@/tasks/module-tasks/Index.vue') },
-    { path: '/user-groups', component: () => import('@/tasks/user-groups/Index.vue') },
-    { path: '/system-configurations', component: () => import('@/tasks/system-configurations/Index.vue') },
-    { path: '*',  component: () => import('@/components/busy-states/404.vue'), },
-]
+//Get Routes according folder structure inside tasks folder
+//Index.vue is main file url is the folder name
+//subdirectory url will be subdirectory way
+
+function getRoutes() {
+  let routes =[];
+  routes.push({ path: '/',  component: () => import('@/tasks/Dashboard.vue')});
+  routes.push({ path: '/login', component: () => import('@/tasks/Login.vue')});
+  let vueIndexFiles = require.context('@/tasks/',true,/\/Index\.vue$/).keys();
+  for(let i=0;i<vueIndexFiles.length;i++) {
+    let file=vueIndexFiles[i];
+    let path=file.substr(1,file.length-11);  
+    routes.push({ path: path, component: () => import('@/tasks'+path+'/Index.vue')});  
+    //routes.push({ path: path, component: () => import('@/tasks'+path+'/Index.vue'),children: [{path: 'add'},{path: 'edit/:item_id'}]});    
+         
+  }
+  routes.push({ path: '*',  component: () => import('@/components/busy-states/404.vue')});
+
+
+  return routes;
+}
+let routes =getRoutes();
 
 const router = new VueRouter({
   mode: 'history',

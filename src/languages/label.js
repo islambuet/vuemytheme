@@ -72,13 +72,15 @@ export var labels={
         en:"Next",
         bn:"পরবর্তী "
     },
+    label_showing:{
+        en:"showing",
+        bn:"দেখাচ্ছে"
+    },
+    
+    //pagination end
     label_dashboard:{
         en:"Dashboard",
         bn:"ড্যাশবোর্ড"
-    },
-    label_purpose:{
-        en:"Purpose",
-        bn:"উদ্দেশ্য"
     },
     label_description:{
         en:"Description",
@@ -112,7 +114,50 @@ export var labels={
         en:"Login",
         bn:"লগইন"
     },    
-
+    label_name:{
+        en:"Name",
+        bn:"নাম"
+    },
+    label_name_en:{
+        en:"Name",
+        bn:"Name"
+    },    
+    label_name_bn:{
+        en:"নাম",
+        bn:"নাম"
+    },
+    label_prefix:{
+        en:"Prefix",
+        bn:'প্রিফিক্স'       
+    },
+    label_location:{
+        en:"Locations",
+        bn:'ঠিকানা'       
+    },
+    label_building:{
+        en:"Building",
+        bn:'বিল্ডিং'       
+    },
+    label_asset_group:{
+        en:"Asset Group",
+        bn:'সম্পদ গ্রুপ'       
+    },
+    label_asset_category:{
+        en:"Asset Category",
+        bn:'সম্পদ বিভাগ'       
+    },
+    label_mobile_no:{
+        en:"Mobile no.",
+        bn:'মোবাইল নাম্বার'       
+    },
+    label_email:{
+        en:"Email",
+        bn:'ইমেইল'       
+    },
+    label_config_value:{
+        en:"Config Value",
+        bn:'ভ্যালু'       
+    },
     //unsed
     //header section
 

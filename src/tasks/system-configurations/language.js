@@ -10,5 +10,9 @@ export var labels={
     label_edit:{
         en:'Edit Configuration',
         bn:'কনফিগারেশন সম্পাদন করুন'       
-    }
+    },
+    label_purpose:{
+        en:"Purpose",
+        bn:"উদ্দেশ্য"
+    },
 }

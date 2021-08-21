@@ -16,6 +16,16 @@ function initialData() {
       info:{},
       tasks: []
     },
+    locations: {
+      buildings: {},
+      floors: {},
+      rooms: {},
+    },
+    assets: {
+      groups: {},
+      categories: {},
+    },
+    baseUrl: process.env.BASE_URL,
     statusTaskLoaded: 0,    //Loading=0,success=1,failed=-1,acceesdenied=-2, site_off_line = -3  for all page
     statusDataLoaded: 1,    //Loading=0,loaed=1
     labels: {},

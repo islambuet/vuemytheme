@@ -1,7 +1,7 @@
 <template>    
     <div class="box">
         <div class="d-flex align-items-center justify-content-center">
-            <img src="theme/images/loading.svg" alt="">
+            <img :src="$systemVariables.baseUrl+'theme/images/loading.svg'" alt="">
         </div>
     </div>    
 </template>

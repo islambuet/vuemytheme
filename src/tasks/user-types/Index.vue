@@ -2,7 +2,7 @@
     <div v-if="$systemVariables.statusTaskLoaded==1">
         <div class="card">
             <div class="card-header p-1">
-                <h4 class="card-title">{{$systemFunctions.getLabelTask('label_system_configs')}}</h4>
+                <h4 class="card-title">{{$systemFunctions.getLabelTask('label_task')}}</h4>
             </div>
             <hr class="my-0"/>
             <div class="card-content">
@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <div v-if="permissions.action_7" class="col-md-6 col-sm-12 d-flex align-items-center">
-                            <div class="input-group float-right p-0">
+                            <div class="input-group float-right p-0 input-group-sm">
                                 <input @keyup.enter="search" v-model="searchString" type="text" class="form-control" placeholder="Search..." aria-describedby="button-addon2">
                                 <div class="input-group-append" id="button-addon2">
                                         <button  class="btn btn-m bg-gradient-primary waves-effect waves-light" type="button"><i class="feather icon-search"></i></button>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="card-body" style='overflow-x:auto'>
                     <table class="table table-m table-bordered">
-                        <thead class="table-light cell-m">
+                        <thead class="table-active cell-m">
                             <tr>
                                 <th class="cell-nowrap d-print-none">{{$systemFunctions.getLabel('label_action')}}</th>
                                 <th v-for="(column,i) in columns.csv" :key="'columnTable'+i">{{$systemFunctions.getLabel(column.label)}}</th>                            
@@ -56,9 +56,8 @@
                                     </div>
                                 </td>
                                 <td class="col-1">{{ item.id }}</td>
-                                <td class="col-3">{{ item.purpose }}</td>
-                                <td class="col-3">{{ item.description }}</td>
-                                <td class="col-2">{{ item.config_value }}</td>
+                                <td class="col-3">{{ item.prefix }}</td>
+                                <td class="col-5">{{ item.user_type }}</td>
                                 <td class="col-3">{{ item.status }}</td>
                             </tr>
                         </tbody>
@@ -83,16 +82,12 @@
                         <form id="formSave">
                             <input type="hidden" name="id" :value="item.id" />
                             <fieldset class="form-group">
-                                <label>{{$systemFunctions.getLabel('label_purpose')}}</label>                                
-                                <input name="item[purpose]" v-model="item.purpose" type="text" class="form-control" placeholder="Purpose" required>
+                                <label>{{$systemFunctions.getLabel('label_prefix')}}</label>                                
+                                <input name="item[prefix]" v-model="item.prefix" type="text" class="form-control" placeholder="Prefix" required>
                             </fieldset>
                             <fieldset class="form-group">
-                                <label>{{$systemFunctions.getLabel('label_value')}}</label>                                
-                                <input name="item[config_value]" v-model="item.config_value" type="text" class="form-control" placeholder="Config Value" required>
-                            </fieldset>
-                            <fieldset class="form-group">
-                                <label>{{$systemFunctions.getLabel('label_description')}}</label>                                
-                                <input name="item[description]" v-model="item.description" type="text" class="form-control" placeholder="Description" required>
+                                <label>{{$systemFunctions.getLabelTask('label_user_type')}}</label>                                
+                                <input name="item[user_type]" v-model="item.user_type" type="text" class="form-control" placeholder="User Type" required>
                             </fieldset>
                             <fieldset class="form-group">
                                 <label>{{$systemFunctions.getLabel('label_status')}}</label>                                  
@@ -122,18 +117,14 @@ import ValidationError from '@/components/ValidationError.vue';
 
         data (){
             return {
-                refreshRole:false,
                 permissions:{'action_0':0},
                 columns:{csv:[]},
                 //csv:all-hidden,hidden,control/all,filter/search
-                itemDefault: {id: 0, name: '', ordering: '', status: ''},
+                itemDefault: {id: 0, user_type: '', prefix: '', status: ''},
                 items: {data:[]},
                 item: {},                
-                editing: false,
                 searchString: '',
                 pagination: {current_page: 1,per_page_options: [2,10,20,500,1000],per_page:20,show_all_items:true},
-                modules_tasks:{'max_level':1,'tree':[]}, 
-                module_task_max_action:8,
             }
         },
         mounted (){
@@ -141,7 +132,7 @@ import ValidationError from '@/components/ValidationError.vue';
                 return;
             }
             this.$systemFunctions.loadTaskLanguages([
-                {language:this.$systemVariables.language,file:'tasks/system-configurations/language.js'},
+                {language:this.$systemVariables.language,file:'tasks/user-types/language.js'},
             ]);
             this.init();            
         },
@@ -162,16 +153,13 @@ import ValidationError from '@/components/ValidationError.vue';
                 this.searchString='';
                 this.$systemVariables.statusTaskLoaded=0;
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/system-configs/initialize')
+                this.$axios.get('/user-types/initialize')
                 .then(res=>{
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
                         this.setColumnCsv();
-                        this.modules_tasks=res.data.modules_tasks;
-                        this.permissions=res.data.permissions;
                         this.permissions=res.data.permissions;
                         this.itemDefault=res.data.itemDefault;
-                        //this.items=res.data.items;                        
                         this.$systemVariables.statusTaskLoaded=1;
                         this.getItems(this.pagination);
                     }
@@ -192,16 +180,12 @@ import ValidationError from '@/components/ValidationError.vue';
                     key: 'id'
                 });
                 this.columns.csv.push({
-                    label: this.$systemFunctions.getLabelTask('label_purpose'),
+                    label: this.$systemFunctions.getLabel('label_prefix'),
                     key: 'name'
                 });
                 this.columns.csv.push({
-                    label: this.$systemFunctions.getLabel('label_description'),
-                    key: 'description'
-                });
-                this.columns.csv.push({
-                    label: this.$systemFunctions.getLabel('label_config_value'),
-                    key: 'config_value'
+                    label: this.$systemFunctions.getLabelTask('label_user_type'),
+                    key: 'ordering'
                 });
                 this.columns.csv.push({
                     label: this.$systemFunctions.getLabel('label_status'),
@@ -210,7 +194,7 @@ import ValidationError from '@/components/ValidationError.vue';
             },
             getItems(pagination){
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/system-configs/get-items?page='+ pagination.current_page+'&perPage='+ pagination.per_page)
+                this.$axios.get('/user-types/get-items?page='+ pagination.current_page+'&perPage='+ pagination.per_page)
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -238,7 +222,7 @@ import ValidationError from '@/components/ValidationError.vue';
             saveItem(){
                 
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.post('/system-configs/save-item',new FormData(document.getElementById('formSave')))
+                this.$axios.post('/user-types/save-item',new FormData(document.getElementById('formSave')))
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){

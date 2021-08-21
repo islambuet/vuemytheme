@@ -302,9 +302,7 @@ import ValidationError from '@/components/ValidationError.vue';
                         this.setColumnCsv();
                         this.modules_tasks=res.data.modules_tasks;
                         this.permissions=res.data.permissions;
-                        this.permissions=res.data.permissions;
                         this.itemDefault=res.data.itemDefault;
-                        //this.items=res.data.items;                        
                         this.$systemVariables.statusTaskLoaded=1;
                         this.getItems(this.pagination);
                     }

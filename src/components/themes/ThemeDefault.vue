@@ -6,7 +6,7 @@
       <div id="system_content">
         <LoadingAccessDeny v-if="$systemVariables.statusTaskLoaded==-2"/>                
         <SiteOffline v-else-if="$systemVariables.statusTaskLoaded==-3"/>                
-        <router-view v-else />
+        <router-view/>
       </div>
     </div>
 </template>
