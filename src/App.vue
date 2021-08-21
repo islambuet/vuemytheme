@@ -75,7 +75,6 @@ export default {
               }
             }  
             this.statusSiteLoaded=1; 
-
          
         })).catch(error => {            
           this.statusSiteLoaded=-1;
