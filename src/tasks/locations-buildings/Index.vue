@@ -139,7 +139,7 @@ import ValidationError from '@/components/ValidationError.vue';
                 return;
             }
             this.$systemFunctions.loadTaskLanguages([
-                {language:this.$systemVariables.language,file:'tasks/location-buildings/language.js'},
+                {language:this.$systemVariables.language,file:'tasks/locations-buildings/language.js'},
             ]);
             this.init();            
         },
@@ -160,7 +160,7 @@ import ValidationError from '@/components/ValidationError.vue';
                 this.searchString='';
                 this.$systemVariables.statusTaskLoaded=0;
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/location-buildings/initialize')
+                this.$axios.get('/locations-buildings/initialize')
                 .then(res=>{
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -197,7 +197,7 @@ import ValidationError from '@/components/ValidationError.vue';
             },
             getItems(pagination){
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/location-buildings/get-items?page='+ pagination.current_page+'&perPage='+ pagination.per_page)
+                this.$axios.get('/locations-buildings/get-items?page='+ pagination.current_page+'&perPage='+ pagination.per_page)
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -225,7 +225,7 @@ import ValidationError from '@/components/ValidationError.vue';
             saveItem(){
                 
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.post('/location-buildings/save-item',new FormData(document.getElementById('formSave')))
+                this.$axios.post('/locations-buildings/save-item',new FormData(document.getElementById('formSave')))
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){

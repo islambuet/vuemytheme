@@ -82,11 +82,16 @@
                             <input type="hidden" name="id" :value="item.id" />
                             <fieldset class="form-group">
                                <label>{{$systemFunctions.getLabel('label_building')}}</label>                                
-                               <select name="item[building_id]" v-model="item.building_id" id="" class="form-control">
+                               <select name="item[building_id]" v-model="item.building_id" id=""  class="form-control" @change="setFloors(item.building_id)">
                                    <option v-for="(item, index) in $systemVariables.locations.buildings" :key="index" :value="item.id">{{ $systemVariables.language == 'en' ? item.name_en : item.name_bn }}</option>
                                </select>
                             </fieldset>
-
+                            <fieldset class="form-group">
+                               <label>{{$systemFunctions.getLabel('label_floor')}}</label>                                
+                               <select name="item[floor_id]" v-model="item.floor_id" id="" class="form-control" :disabled="!floors.length">
+                                   <option  v-for="(item, index) in floors" :key="index" :value="item.id">{{ $systemVariables.language == 'en' ? item.name_en : item.name_bn }}</option>
+                               </select>
+                            </fieldset>
                             <fieldset class="form-group">
                                 <label>{{$systemFunctions.getLabel('label_name')}}</label>                                
                                 <input name="item[name_en]" v-model="item.name_en" type="text" class="form-control" placeholder="In English" required>
@@ -104,6 +109,7 @@
                                 <select class="form-control" name="item[status]" v-model="item.status" required>                                    
                                     <option :value="$systemVariables.dbStatus.ACTIVE">{{$systemVariables.dbStatus.ACTIVE}}</option>
                                     <option :value="$systemVariables.dbStatus.INACTIVE">{{$systemVariables.dbStatus.INACTIVE}}</option>
+                                    
                                 </select>
                             </fieldset>
                             <button @click="saveItem()" type="button" class="btn bg-gradient-success mr-1 mb-1 waves-effect waves-light float-right">{{$systemFunctions.getLabel('button_save')}}</button>                            
@@ -129,10 +135,13 @@ import ValidationError from '@/components/ValidationError.vue';
                 refreshRole:false,
                 permissions:{'action_0':0},
                 columns:{csv:[]},
+                floors: {},
                 //csv:all-hidden,hidden,control/all,filter/search
-                itemDefault: {id: 0, name_en: '', name_bn: '', ordering:'', status: ''},
+                itemDefault: {id: 0, name_en: '', name_bn: '', ordering: '', status: ''},
                 items: {data:[]},
-                item: {},                
+                item: {
+                    building_id: '1'
+                },                
                 editing: false,
                 searchString: '',
                 pagination: {current_page: 1,per_page_options: [2,10,20,500,1000],per_page:20,show_all_items:true},
@@ -141,11 +150,13 @@ import ValidationError from '@/components/ValidationError.vue';
             }
         },
         mounted (){
+            this.setFloors(this.$systemVariables.locations.buildings[0].id);
+            // console.log(this.floors[0].id);
             if(!(this.$systemVariables.user.id>0)){
                 return;
             }
             this.$systemFunctions.loadTaskLanguages([
-                {language:this.$systemVariables.language,file:'tasks/location-floors/language.js'},
+                {language:this.$systemVariables.language,file:'tasks/locations-rooms/language.js'},
             ]);
             this.init();            
         },
@@ -159,14 +170,17 @@ import ValidationError from '@/components/ValidationError.vue';
                     }
                     return true;
                 });
-            },         
+            },
+
+            
+            
         }, 
         methods: {
             init(){
                 this.searchString='';
                 this.$systemVariables.statusTaskLoaded=0;
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/location-floors/initialize')
+                this.$axios.get('/locations-rooms/initialize')
                 .then(res=>{
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -186,6 +200,7 @@ import ValidationError from '@/components/ValidationError.vue';
                 });
 
             },
+            
             setColumnCsv() {
                 this.columns.csv=[];                
                 this.columns.csv.push({
@@ -203,7 +218,7 @@ import ValidationError from '@/components/ValidationError.vue';
             },
             getItems(pagination){
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/location-floors/get-items?page='+ pagination.current_page+'&perPage='+ pagination.per_page)
+                this.$axios.get('/locations-rooms/get-items?page='+ pagination.current_page+'&perPage='+ pagination.per_page)
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -221,17 +236,19 @@ import ValidationError from '@/components/ValidationError.vue';
             addItem(){
                 this.$systemVariables.validationErrors='';
                 this.item={};
-                Object.assign(this.item, this.itemDefault);                
+                Object.assign(this.item, this.itemDefault);
+                this.setFloors();                
             },
             editItem(item){
                 this.$systemVariables.validationErrors='';
                 this.item={};
-                Object.assign(this.item, item);                            
+                Object.assign(this.item, item); 
+                this.setFloors();                
             },         
             saveItem(){
                 
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.post('/location-floors/save-item',new FormData(document.getElementById('formSave')))
+                this.$axios.post('/locations-rooms/save-item',new FormData(document.getElementById('formSave')))
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -248,7 +265,27 @@ import ValidationError from '@/components/ValidationError.vue';
                     }                              
                 });
             },
+
+            setFloors(){
+                console.log(this.$systemVariables.locations.floors + 'hello');
+                // this.floors = this.$systemVariables.locations.floors.filter(floor => (floor.building_id == this.item.building_id))
+                // this.item.floor_id = this.floors[0].id;
+                // console.log("called"+this.item.building_id);
+                // return this.$systemVariables.locations.floors;
+                // console.log(this.item.building_id);
+                // var $this=this;
+                // return this.$systemVariables.locations.floors.filter((floor)=>{
+                //     if(floor.building_id==$this.item.building_id)
+                //     {return true}
+                    
+                //     return false;
+                // });
+
+                //return this.$systemVariables.locations.floors.filter(floor => (floor.building_id == this.item.building_id)
+            },
+            
         }
+
     }
 </script>
 

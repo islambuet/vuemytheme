@@ -63,19 +63,25 @@ export default {
     {  
       this.$axios.all([      
           this.$axios.get('/user/initialize'),  
-                
-        ]).then(this.$axios.spread((resUser) => 
+          this.$axios.get('/locations-buildings/all-items'),         
+          this.$axios.get('/locations-floors/all-items'),         
+          this.$axios.get('/assets-groups/all-items'),         
+          this.$axios.get('/assets-categories/all-items'),         
+        ]).then(this.$axios.spread((resUser, resBuildings, resFloors, resAssetGroups, resAssetCategories) => 
         {
-          
+          this.$systemVariables.locations.buildings=resBuildings.data.items;
+          this.$systemVariables.locations.floors=resFloors.data.items; 
+          this.$systemVariables.assets.groups=resAssetGroups.data.items;
+          this.$systemVariables.assets.categories=resAssetCategories.data.items; 
           if(resUser.data.user){               
               this.$systemFunctions.setUser(resUser.data.user); 
             }else{
               if(this.$router.history.current.path!='/login'){
                 this.$router.push("/login");
               }
-            }  
-            this.statusSiteLoaded=1; 
-         
+            }   
+            this.statusSiteLoaded=1;
+                  
         })).catch(error => {            
           this.statusSiteLoaded=-1;
       });

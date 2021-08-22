@@ -203,7 +203,7 @@ import ValidationError from '@/components/ValidationError.vue';
                 return;
             }
             this.$systemFunctions.loadTaskLanguages([
-                {language:this.$systemVariables.language,file:'tasks/user-groups/language.js'},
+                {language:this.$systemVariables.language,file:'tasks/users-groups/language.js'},
             ]);
             $(document).ready(function()
             {
@@ -295,7 +295,7 @@ import ValidationError from '@/components/ValidationError.vue';
             init(){
                 this.$systemVariables.statusTaskLoaded=0;
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/user-groups/initialize')
+                this.$axios.get('/users-groups/initialize')
                 .then(res=>{
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -337,7 +337,7 @@ import ValidationError from '@/components/ValidationError.vue';
             },
             getItems(pagination){
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/user-groups/get-items?page='+ pagination.current_page+'&perPage='+ pagination.per_page)
+                this.$axios.get('/users-groups/get-items?page='+ pagination.current_page+'&perPage='+ pagination.per_page)
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -377,7 +377,7 @@ import ValidationError from '@/components/ValidationError.vue';
             saveItem(){
                 
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.post('/user-groups/save-item',new FormData(document.getElementById('formSave')))
+                this.$axios.post('/users-groups/save-item',new FormData(document.getElementById('formSave')))
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -396,7 +396,7 @@ import ValidationError from '@/components/ValidationError.vue';
             },
             saveRole(form_id){
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.post('/user-groups/save-role/'+this.item.id,new FormData(document.getElementById(form_id)))
+                this.$axios.post('/users-groups/save-role/'+this.item.id,new FormData(document.getElementById(form_id)))
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){                        

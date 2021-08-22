@@ -149,7 +149,7 @@ import ValidationError from '@/components/ValidationError.vue';
                 return;
             }
             this.$systemFunctions.loadTaskLanguages([
-                {language:this.$systemVariables.language,file:'tasks/module-tasks/language.js'},
+                {language:this.$systemVariables.language,file:'tasks/modules-tasks/language.js'},
             ]);            
             this.init();            
         },
@@ -193,7 +193,7 @@ import ValidationError from '@/components/ValidationError.vue';
             init(){
                 this.$systemVariables.statusTaskLoaded=0;
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/module-tasks/initialize')
+                this.$axios.get('/modules-tasks/initialize')
                 .then(res=>{
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -251,7 +251,7 @@ import ValidationError from '@/components/ValidationError.vue';
             },
             getItems(){
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/module-tasks/get-items')
+                this.$axios.get('/modules-tasks/get-items')
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -280,7 +280,7 @@ import ValidationError from '@/components/ValidationError.vue';
             saveItem(){
                 
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.post('/module-tasks/save-item',new FormData(document.getElementById('formSave')))
+                this.$axios.post('/modules-tasks/save-item',new FormData(document.getElementById('formSave')))
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){

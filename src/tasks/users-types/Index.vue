@@ -56,7 +56,8 @@
                                     </div>
                                 </td>
                                 <td class="col-1">{{ item.id }}</td>
-                                <td class="col-5">{{ $systemVariables.language == 'en' ? item.name_en : item.name_bn }}</td>
+                                <td class="col-3">{{ item.prefix }}</td>
+                                <td class="col-5">{{ item.user_type }}</td>
                                 <td class="col-3">{{ item.status }}</td>
                             </tr>
                         </tbody>
@@ -70,7 +71,7 @@
             <div class="modal-dialog modal-dialog-scrollable" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 v-if="item.id>0" class="modal-title" id="exampleModalCenterTitle">{{$systemFunctions.getLabelTask('label_edit')}} ({{this.$systemVariables.language == 'en' ? item.name_en : item.name_bn}})</h5>
+                        <h5 v-if="item.id>0" class="modal-title" id="exampleModalCenterTitle">{{$systemFunctions.getLabelTask('label_edit')+' ('+item.purpose+')'}}</h5>
                         <h5 v-else class="modal-title" id="exampleModalCenterTitle">{{$systemFunctions.getLabelTask('label_new')}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
@@ -81,28 +82,12 @@
                         <form id="formSave">
                             <input type="hidden" name="id" :value="item.id" />
                             <fieldset class="form-group">
-                               <label>{{$systemFunctions.getLabel('label_building')}}</label>                                
-                               <select name="item[building_id]" v-model="item.building_id" id=""  class="form-control" @change="setFloors(item.building_id)">
-                                   <option v-for="(item, index) in $systemVariables.locations.buildings" :key="index" :value="item.id">{{ $systemVariables.language == 'en' ? item.name_en : item.name_bn }}</option>
-                               </select>
+                                <label>{{$systemFunctions.getLabel('label_prefix')}}</label>                                
+                                <input name="item[prefix]" v-model="item.prefix" type="text" class="form-control" placeholder="Prefix" required>
                             </fieldset>
                             <fieldset class="form-group">
-                               <label>{{$systemFunctions.getLabel('label_floor')}}</label>                                
-                               <select name="item[floor_id]" v-model="item.floor_id" id="" class="form-control" :disabled="!floors.length">
-                                   <option  v-for="(item, index) in floors" :key="index" :value="item.id">{{ $systemVariables.language == 'en' ? item.name_en : item.name_bn }}</option>
-                               </select>
-                            </fieldset>
-                            <fieldset class="form-group">
-                                <label>{{$systemFunctions.getLabel('label_name')}}</label>                                
-                                <input name="item[name_en]" v-model="item.name_en" type="text" class="form-control" placeholder="In English" required>
-                            </fieldset>
-                            <fieldset class="form-group">
-                                <label>{{$systemFunctions.getLabel('label_name')}}</label>                                
-                                <input name="item[name_bn]" v-model="item.name_bn" type="text" class="form-control" placeholder="In Bangla" required>
-                            </fieldset>
-                            <fieldset class="form-group">
-                                <label>{{$systemFunctions.getLabel('label_ordering')}}</label>                                
-                                <input name="item[ordering]" v-model="item.ordering" type="text" class="form-control" placeholder="Ordering" required>
+                                <label>{{$systemFunctions.getLabelTask('label_user_type')}}</label>                                
+                                <input name="item[user_type]" v-model="item.user_type" type="text" class="form-control" placeholder="User Type" required>
                             </fieldset>
                             <fieldset class="form-group">
                                 <label>{{$systemFunctions.getLabel('label_status')}}</label>                                  
@@ -132,31 +117,22 @@ import ValidationError from '@/components/ValidationError.vue';
 
         data (){
             return {
-                refreshRole:false,
                 permissions:{'action_0':0},
                 columns:{csv:[]},
-                floors: {},
                 //csv:all-hidden,hidden,control/all,filter/search
-                itemDefault: {id: 0, name_en: '', name_bn: '', ordering: '', status: ''},
+                itemDefault: {id: 0, user_type: '', prefix: '', status: ''},
                 items: {data:[]},
-                item: {
-                    building_id: '1'
-                },                
-                editing: false,
+                item: {},                
                 searchString: '',
                 pagination: {current_page: 1,per_page_options: [2,10,20,500,1000],per_page:20,show_all_items:true},
-                modules_tasks:{'max_level':1,'tree':[]}, 
-                module_task_max_action:8,
             }
         },
         mounted (){
-            this.setFloors(this.$systemVariables.locations.buildings[0].id);
-            // console.log(this.floors[0].id);
             if(!(this.$systemVariables.user.id>0)){
                 return;
             }
             this.$systemFunctions.loadTaskLanguages([
-                {language:this.$systemVariables.language,file:'tasks/location-rooms/language.js'},
+                {language:this.$systemVariables.language,file:'tasks/users-types/language.js'},
             ]);
             this.init();            
         },
@@ -164,23 +140,20 @@ import ValidationError from '@/components/ValidationError.vue';
             getFilteredItems:function(){   
                 return this.items.data.filter((item)=>{
                     if(this.searchString){
-                        if(item[this.$systemVariables.language == 'en' ? 'name_en' : 'name_bn'].toLowerCase().indexOf(this.searchString.toLowerCase())==-1){
+                        if(item['purpose'].toLowerCase().indexOf(this.searchString.toLowerCase())==-1){
                             return false;
                         } 
                     }
                     return true;
                 });
-            },
-
-            
-            
+            },         
         }, 
         methods: {
             init(){
                 this.searchString='';
                 this.$systemVariables.statusTaskLoaded=0;
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/location-rooms/initialize')
+                this.$axios.get('/users-types/initialize')
                 .then(res=>{
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -200,7 +173,6 @@ import ValidationError from '@/components/ValidationError.vue';
                 });
 
             },
-            
             setColumnCsv() {
                 this.columns.csv=[];                
                 this.columns.csv.push({
@@ -208,8 +180,12 @@ import ValidationError from '@/components/ValidationError.vue';
                     key: 'id'
                 });
                 this.columns.csv.push({
-                    label: this.$systemFunctions.getLabelTask('label_task'),
-                    key: this.$systemVariables.language == 'en' ? 'name_en' : 'name_bn'
+                    label: this.$systemFunctions.getLabel('label_prefix'),
+                    key: 'name'
+                });
+                this.columns.csv.push({
+                    label: this.$systemFunctions.getLabelTask('label_user_type'),
+                    key: 'ordering'
                 });
                 this.columns.csv.push({
                     label: this.$systemFunctions.getLabel('label_status'),
@@ -218,7 +194,7 @@ import ValidationError from '@/components/ValidationError.vue';
             },
             getItems(pagination){
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.get('/location-rooms/get-items?page='+ pagination.current_page+'&perPage='+ pagination.per_page)
+                this.$axios.get('/users-types/get-items?page='+ pagination.current_page+'&perPage='+ pagination.per_page)
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -236,19 +212,17 @@ import ValidationError from '@/components/ValidationError.vue';
             addItem(){
                 this.$systemVariables.validationErrors='';
                 this.item={};
-                Object.assign(this.item, this.itemDefault);
-                this.setFloors();                
+                Object.assign(this.item, this.itemDefault);                
             },
             editItem(item){
                 this.$systemVariables.validationErrors='';
                 this.item={};
-                Object.assign(this.item, item); 
-                this.setFloors();                
+                Object.assign(this.item, item);                            
             },         
             saveItem(){
                 
                 this.$systemVariables.statusDataLoaded=0;
-                this.$axios.post('/location-rooms/save-item',new FormData(document.getElementById('formSave')))
+                this.$axios.post('/users-types/save-item',new FormData(document.getElementById('formSave')))
                 .then(res => {
                     this.$systemVariables.statusDataLoaded = 1;
                     if(res.data.error==''){
@@ -264,24 +238,6 @@ import ValidationError from '@/components/ValidationError.vue';
                         this.$systemFunctions.showResponseFailure();
                     }                              
                 });
-            },
-
-            setFloors(){
-                console.log(this.$systemVariables.locations.floors + 'hello');
-                // this.floors = this.$systemVariables.locations.floors.filter(floor => (floor.building_id == this.item.building_id))
-                // this.item.floor_id = this.floors[0].id;
-                // console.log("called"+this.item.building_id);
-                // return this.$systemVariables.locations.floors;
-                // console.log(this.item.building_id);
-                // var $this=this;
-                // return this.$systemVariables.locations.floors.filter((floor)=>{
-                //     if(floor.building_id==$this.item.building_id)
-                //     {return true}
-                    
-                //     return false;
-                // });
-
-                //return this.$systemVariables.locations.floors.filter(floor => (floor.building_id == this.item.building_id)
             },
             
         }

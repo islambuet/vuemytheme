@@ -36,7 +36,7 @@
                                             </div>
                                         </div>
                                         <div class="login-footer">
-                                          <!-- <router-link to="/user-groups">asdfasdf</router-link> -->
+                                          <!-- <router-link to="/users-groups">asdfasdf</router-link> -->
                                         </div>
                                     </div>
                                 </div>
